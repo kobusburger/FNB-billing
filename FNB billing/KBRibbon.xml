@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load" xmlns:KB="KBNameSpace">
+  <ribbon>
+    <tabs>
+      <!--us idQ with custom namespace to make shared tabs work-->
+      <tab idQ="KB:KBTab" label="KB">
+        <group id="BST" label="BST">
+          <button id="QSummary" label="Create quote summary"
+               screentip="Creates a summary of all the quote sheets" onAction="OnQSummary"/>
+          <button id="PoImport" label="Import purchase order info"
+               screentip="Imports purchase order info from export.csv for all quote sheets" onAction="OnPoImport"/>
+          <button id="QHideBillRows" label="Hide unused bill rows"
+               screentip="Hide unused bill rows for the current quote sheet" onAction="OnQHideBillRows"/>
+          <button id="QUnHideBillRows" label="Unhide all bill rows"
+               screentip="Unhide all bill rows for the current quote sheet" onAction="OnQUnHideBillRows"/>
+          <button id="AboutButton" label="About"
+               screentip="About" onAction="OnAboutButton"/>
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
+
