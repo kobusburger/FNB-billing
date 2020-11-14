@@ -13,13 +13,13 @@ namespace FNB_billing
     {
         internal static void QSummary() //Create a summry of the quote sheets
         {
-            Excel.Application xlAp = Globals.ThisAddIn.Application;
-            Excel.Workbook XlWb = xlAp.ActiveWorkbook;
-            Excel.Worksheet QSSht;
-            string QSummShtName = "QuoteSummary";
-
             try
             {
+                Excel.Application xlAp = Globals.ThisAddIn.Application;
+                Excel.Workbook XlWb = xlAp.ActiveWorkbook;
+                Excel.Worksheet QSSht;
+                string QSummShtName = "QuoteSummary";
+
                 Globals.ThisAddIn.LogTrackInfo("FNBQSummary");
                 xlAp.ScreenUpdating = false;
                 if (ExistSheet(QSummShtName))
@@ -28,13 +28,14 @@ namespace FNB_billing
                     XlWb.Worksheets[QSummShtName].delete();
                     xlAp.DisplayAlerts = true;
                 }
-                QSSht = XlWb.Worksheets.Add();
+                QSSht = XlWb.Worksheets.Add(XlWb.Worksheets[1]);
                 QSSht.Name = QSummShtName;
                 int Col = 0;
                 int Row = 4;
                 QSSht.Cells[1, 1].value = "Do not change. Change data in the quote sheets";
                 QSSht.Cells[2, 1].value = "Summary of all quotes, purchase orders and invoice details on the quote sheets";
                 QSSht.Cells[2, 1].Font.Size = 14;
+                QSSht.Cells[Row, Col += 1].value = "Q Sheet";
                 QSSht.Cells[Row, Col += 1].value = "Country";
                 QSSht.Cells[Row, Col += 1].value = "Province";
                 QSSht.Cells[Row, Col += 1].value = "City";
@@ -53,8 +54,10 @@ namespace FNB_billing
                 {
                     if (IsQuoteSht(Sht))
                     {
-                        Col = 0;
+                        Col = 1;
                         Row += 1;
+                        QSSht.Hyperlinks.Add(Anchor: QSSht.Cells[Row, Col], Address: "", SubAddress:
+                            Sht.Name + "!A1", TextToDisplay: Sht.Name);
                         QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!QCountry";
                         QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!QProvince";
                         QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!QCity";
@@ -83,7 +86,7 @@ namespace FNB_billing
                 QSummList.ListColumns["Inv Amount"].DataBodyRange.NumberFormat = "R# ##0.00";
                 QSummList.ListColumns["Po Date"].DataBodyRange.NumberFormat = "yyyy-mm-dd";
                 QSummList.ListColumns["Inv Date"].DataBodyRange.NumberFormat = "yyyy-mm-dd";
-                QSummList.DataBodyRange.Columns.AutoFit();
+                QSummList.Range.ColumnWidth=13;
                 QSSht.Protect(
                     DrawingObjects: true,
                     Contents: true,
@@ -104,18 +107,18 @@ namespace FNB_billing
                 Globals.ThisAddIn.ExMsg(ex);
             }
         }
-        internal static void PoImport() //Imports PO info from export.csv query in Excel
+        internal static void PoAlocate() //Imports PO info from export.csv query in Excel
         {
-            Excel.Application xlAp = Globals.ThisAddIn.Application;
-            Excel.Workbook XlWb = xlAp.ActiveWorkbook;
-            string PoExportTableName = "PoExport";
-            string PoExportShtName;
-            int PoExportRow = 0;
-            Excel.ListObject PoExportTable;
-            Excel.Range PoExportBody;
-
             try
             {
+                Excel.Application xlAp = Globals.ThisAddIn.Application;
+                Excel.Workbook XlWb = xlAp.ActiveWorkbook;
+                string PoExportTableName = "PoExport";
+                string PoExportShtName;
+                int PoExportRow = 0;
+                Excel.ListObject PoExportTable;
+                Excel.Range PoExportBody;
+
                 Globals.ThisAddIn.LogTrackInfo("FNBPoImport");
                 PoExportShtName = ExistListObject(PoExportTableName);
                 if (PoExportShtName == "") //Test if PoExport table exists
@@ -166,45 +169,59 @@ namespace FNB_billing
         }
         internal static void QHideBillRows() //Hide unsused bill rows on the active quote sheet
         {
-            Excel.Application xlAp = Globals.ThisAddIn.Application;
-            Excel.Workbook XlWb = xlAp.ActiveWorkbook;
-            Excel.Worksheet QSSht = XlWb.ActiveSheet;
-            int BillStartRow;
-            int BillEndRow;
-
-            if (IsQuoteSht(QSSht)) //Do nothing if it is not a quote sheet
+            try
             {
-                BillStartRow = QSSht.Range["A:A"].Find(What: "#BillStart").Row;
-                BillEndRow = QSSht.Range["A:A"].Find(What: "#BillEnd").Row;
-                for (int BillRow = BillStartRow + 1; BillRow < BillEndRow; BillRow += 1)
+                Excel.Application xlAp = Globals.ThisAddIn.Application;
+                Excel.Workbook XlWb = xlAp.ActiveWorkbook;
+                Excel.Worksheet QSSht = XlWb.ActiveSheet;
+                int BillStartRow;
+                int BillEndRow;
+
+                if (IsQuoteSht(QSSht)) //Do nothing if it is not a quote sheet
                 {
-                    if (QSSht.Cells[BillRow,4].text.Length>0 && (QSSht.Cells[BillRow,6].text=="" || QSSht.Cells[BillRow,6].value==0))
+                    BillStartRow = QSSht.Range["A:A"].Find(What: "#BillStart").Row;
+                    BillEndRow = QSSht.Range["A:A"].Find(What: "#BillEnd").Row;
+                    for (int BillRow = BillStartRow + 1; BillRow < BillEndRow; BillRow += 1)
                     {
-                        QSSht.Cells[BillRow, 1].EntireRow.Hidden = true;
+                        if (QSSht.Cells[BillRow, 4].text.Length > 0 && (QSSht.Cells[BillRow, 6].text == "" || QSSht.Cells[BillRow, 6].value == 0))
+                        {
+                            QSSht.Cells[BillRow, 1].EntireRow.Hidden = true;
+                        }
+                        else
+                        {
+                            QSSht.Cells[BillRow, 1].EntireRow.Hidden = false;
+                        }
                     }
-                    else
+                }
+            }
+            catch (Exception ex)
+            {
+                Globals.ThisAddIn.ExMsg(ex);
+            }
+        }
+        internal static void QUnHideBillRows() //Unhide all bill rows
+        {
+            try
+            {
+                Excel.Application xlAp = Globals.ThisAddIn.Application;
+                Excel.Workbook XlWb = xlAp.ActiveWorkbook;
+                Excel.Worksheet QSSht = XlWb.ActiveSheet;
+                int BillStartRow;
+                int BillEndRow;
+
+                if (IsQuoteSht(QSSht)) //Do nothing if it is not a quote sheet
+                {
+                    BillStartRow = QSSht.Range["A:A"].Find(What: "#BillStart").Row;
+                    BillEndRow = QSSht.Range["A:A"].Find(What: "#BillEnd").Row;
+                    for (int BillRow = BillStartRow + 1; BillRow < BillEndRow; BillRow += 1)
                     {
                         QSSht.Cells[BillRow, 1].EntireRow.Hidden = false;
                     }
                 }
             }
-        }
-        internal static void QUnHideBillRows() //Unhide all bill rows
-        {
-            Excel.Application xlAp = Globals.ThisAddIn.Application;
-            Excel.Workbook XlWb = xlAp.ActiveWorkbook;
-            Excel.Worksheet QSSht = XlWb.ActiveSheet;
-            int BillStartRow;
-            int BillEndRow;
-
-            if (IsQuoteSht(QSSht)) //Do nothing if it is not a quote sheet
+            catch (Exception ex)
             {
-                BillStartRow = QSSht.Range["A:A"].Find(What: "#BillStart").Row;
-                BillEndRow = QSSht.Range["A:A"].Find(What: "#BillEnd").Row;
-                for (int BillRow = BillStartRow + 1; BillRow < BillEndRow; BillRow += 1)
-                {
-                    QSSht.Cells[BillRow, 1].EntireRow.Hidden = false;
-                }
+                Globals.ThisAddIn.ExMsg(ex);
             }
         }
         internal static bool ExistSheet(string SheetName) // Returns true if a sheet exists in the workbook
@@ -226,11 +243,16 @@ namespace FNB_billing
             string[] LineCodes = { "#BillStart", "BillEnd", "#BSTStart", "#BSTEnd" };
             string[] CellNames = { "PoDate", "PoNo", "PoStatus", "PoAmount", "QBranch","InvNo","InvDate","InvNo"}; //Check only required names
             Excel.Range LineCodeRange = XlSh.Range["A:A"];
+            Excel.XlColorIndex TabColor = XlSh.Tab.ColorIndex;
 
             foreach (string LineCode in LineCodes) // Loop through line codes
             {
                 var FindRange = LineCodeRange.Find(What: LineCode);
-                if (FindRange == null) { return false; }
+                if (FindRange == null) 
+                {
+                    XlSh.Tab.ColorIndex = TabColor;
+                    return false; 
+                }
             }
             foreach (string CellName in CellNames) // Loop through cell names
             {
@@ -239,10 +261,12 @@ namespace FNB_billing
                     var NamedRange = XlSh.Names.Item(CellName); 
                 }
                 catch 
-                { 
+                {
+                    XlSh.Tab.ColorIndex = TabColor;
                     return false;
                 }
             }
+            XlSh.Tab.Color = Excel.XlRgbColor.rgbAquamarine;
             return true;
         }
         internal static string ExistListObject(string ListName) // Returns sheet name if a list object exist in the workbook

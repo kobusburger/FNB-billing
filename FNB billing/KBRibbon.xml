@@ -7,8 +7,8 @@
         <group id="BST" label="BST">
           <button id="QSummary" label="Create quote summary"
                screentip="Creates a summary of all the quote sheets" onAction="OnQSummary"/>
-          <button id="PoImport" label="Import purchase order info"
-               screentip="Imports purchase order info from export.csv for all quote sheets" onAction="OnPoImport"/>
+          <button id="PoImport" label="Alocate purchase order info"
+               screentip="Alocate purchase order info to quote sheets" onAction="OnPoAlocate"/>
           <button id="QHideBillRows" label="Hide unused bill rows"
                screentip="Hide unused bill rows for the current quote sheet" onAction="OnQHideBillRows"/>
           <button id="QUnHideBillRows" label="Unhide all bill rows"

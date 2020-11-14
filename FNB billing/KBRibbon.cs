@@ -55,8 +55,8 @@ namespace FNB_billing
         }
         public void OnQSummary(Office.IRibbonControl control)
         { FNB.QSummary(); }
-        public void OnPoImport(Office.IRibbonControl control)
-        { FNB.PoImport(); }
+        public void OnPoAlocate(Office.IRibbonControl control)
+        { FNB.PoAlocate(); }
         public void OnQHideBillRows(Office.IRibbonControl control)
         { FNB.QHideBillRows(); }
         public void OnQUnHideBillRows(Office.IRibbonControl control)

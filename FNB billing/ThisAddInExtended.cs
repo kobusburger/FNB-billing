@@ -19,7 +19,7 @@ namespace FNB_billing
             var EventProperties = new Dictionary<string, string>();
             xlAp = Globals.ThisAddIn.Application;
             XlWb = xlAp.ActiveWorkbook;
-            EventProperties.Add("FilePath", XlWb.FullName);
+//            EventProperties.Add("FilePath", XlWb.FullName);
             UserName = System.Environment.GetEnvironmentVariable("username");
             PubVer = "";
             if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
@@ -50,14 +50,10 @@ namespace FNB_billing
         internal void ExMsg(Exception Ex)
         {
             Excel.Application xlAp = Globals.ThisAddIn.Application;
-            string ErrorDescription = "";
+            string ErrorDescription;
             xlAp.StatusBar = false;
             xlAp.ScreenUpdating = true;
-            ErrorDescription = Ex.Source +
-                "\r\n0x" + Ex.HResult.ToString("x") + ": " + Ex.Message +
-                "\r\n" + Ex.StackTrace +
-                "\r\n" + Ex.TargetSite;
-
+            ErrorDescription = Ex.Data + "\r\n" + Ex.ToString();
             MessageBox.Show(ErrorDescription, "Exception (copy text with Ctrl+C)");
         }
 
