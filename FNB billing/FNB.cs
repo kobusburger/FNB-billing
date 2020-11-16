@@ -54,22 +54,23 @@ namespace FNB_billing
                 {
                     if (IsQuoteSht(Sht))
                     {
+                        string ShtName= "'" + Sht.Name + "'";
                         Col = 1;
                         Row += 1;
                         QSSht.Hyperlinks.Add(Anchor: QSSht.Cells[Row, Col], Address: "", SubAddress:
-                            Sht.Name + "!A1", TextToDisplay: Sht.Name);
-                        QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!QCountry";
-                        QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!QProvince";
-                        QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!QCity";
-                        QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!QBranch";
-                        QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!QTotal";
-                        QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!PoNo";
-                        QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!PoDate";
-                        QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!PoStatus";
-                        QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!PoAmount";
-                        QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!InvNo";
-                        QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!InvDate";
-                        QSSht.Cells[Row, Col += 1].value = "=" + Sht.Name + "!InvAmount";
+                            ShtName + "!A1", TextToDisplay: Sht.Name);
+                        QSSht.Cells[Row, Col += 1].value = "=" + ShtName + "!QCountry";
+                        QSSht.Cells[Row, Col += 1].value = "=" + ShtName + "!QProvince";
+                        QSSht.Cells[Row, Col += 1].value = "=" + ShtName + "!QCity";
+                        QSSht.Cells[Row, Col += 1].value = "=" + ShtName + "!QBranch";
+                        QSSht.Cells[Row, Col += 1].value = "=" + ShtName + "!QTotal";
+                        QSSht.Cells[Row, Col += 1].value = "=" + ShtName + "!PoNo";
+                        QSSht.Cells[Row, Col += 1].value = "=" + ShtName + "!PoDate";
+                        QSSht.Cells[Row, Col += 1].value = "=" + ShtName + "!PoStatus";
+                        QSSht.Cells[Row, Col += 1].value = "=" + ShtName + "!PoAmount";
+                        QSSht.Cells[Row, Col += 1].value = "=" + ShtName + "!InvNo";
+                        QSSht.Cells[Row, Col += 1].value = "=" + ShtName + "!InvDate";
+                        QSSht.Cells[Row, Col += 1].value = "=" + ShtName + "!InvAmount";
 
                         //MessageBox.Show(Sheet.Name + " is a quote sheet");
                     }
