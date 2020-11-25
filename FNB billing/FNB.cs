@@ -82,12 +82,15 @@ namespace FNB_billing
                 Excel.ListObject QSummList = QSSht.ListObjects.Add(Excel.XlListObjectSourceType.xlSrcRange, QSSht.Cells[Row, 1].CurrentRegion, false,
                     Excel.XlYesNoGuess.xlYes);
                 QSummList.Name = "Tab" + QSummShtName;
-                QSummList.ListColumns["Quote Total"].DataBodyRange.NumberFormat = "R# ##0.00";
-                QSummList.ListColumns["Po Amount"].DataBodyRange.NumberFormat = "R# ##0.00";
-                QSummList.ListColumns["Inv Amount"].DataBodyRange.NumberFormat = "R# ##0.00";
-                QSummList.ListColumns["Po Date"].DataBodyRange.NumberFormat = "yyyy-mm-dd";
-                QSummList.ListColumns["Inv Date"].DataBodyRange.NumberFormat = "yyyy-mm-dd";
-                QSummList.Range.ColumnWidth=13;
+                if (QSummList.ListRows.Count > 0)
+                {
+                    QSummList.ListColumns["Quote Total"].DataBodyRange.NumberFormat = "R# ##0.00";
+                    QSummList.ListColumns["Po Amount"].DataBodyRange.NumberFormat = "R# ##0.00";
+                    QSummList.ListColumns["Inv Amount"].DataBodyRange.NumberFormat = "R# ##0.00";
+                    QSummList.ListColumns["Po Date"].DataBodyRange.NumberFormat = "yyyy-mm-dd";
+                    QSummList.ListColumns["Inv Date"].DataBodyRange.NumberFormat = "yyyy-mm-dd";
+                    QSummList.Range.ColumnWidth = 13;
+                }
                 QSSht.Protect(
                     DrawingObjects: true,
                     Contents: true,
@@ -135,6 +138,7 @@ namespace FNB_billing
                 {
                     if (IsQuoteSht(Sht))
                     {
+                        PoExportRow = 0;
                         if (Sht.Range["PoNo"].Text != "") //Po No is known
                         {
                             PoExportRow = (int)xlAp.WorksheetFunction.Match(Sht.Range["PoNo"].Text,
@@ -143,7 +147,6 @@ namespace FNB_billing
                         else
                         {
                             var FindRange = PoExportBody.Find(Sht.Range["QBranch"].Text);
-                            PoExportRow = 0;
                             if (FindRange != null)
                             {
                                 PoExportRow = FindRange.Row;
@@ -158,7 +161,7 @@ namespace FNB_billing
                         }
                         else
                         {
-                            MessageBox.Show("Cannot find Po info for " + Sht.Name);
+//                            MessageBox.Show("Cannot find Po info for " + Sht.Name);
                         }
                     }
                     xlAp.ScreenUpdating = true;
