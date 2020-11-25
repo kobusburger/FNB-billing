@@ -142,7 +142,8 @@ namespace FNB_billing
                         }
                         else
                         {
-                            var FindRange = PoExportBody.Find(Sht.Range["QBranch"]);
+                            var FindRange = PoExportBody.Find(Sht.Range["QBranch"].Text);
+                            PoExportRow = 0;
                             if (FindRange != null)
                             {
                                 PoExportRow = FindRange.Row;
