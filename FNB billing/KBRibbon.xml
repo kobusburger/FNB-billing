@@ -4,7 +4,7 @@
     <tabs>
       <!--us idQ with custom namespace to make shared tabs work-->
       <tab idQ="KB:KBTab" label="KB">
-        <group id="BST" label="BST">
+        <group id="FNB" label="FNB">
           <button id="QSummary" label="Create quote summary"
                screentip="Creates a summary of all the quote sheets" onAction="OnQSummary"/>
           <button id="PoImport" label="Alocate purchase order info"
